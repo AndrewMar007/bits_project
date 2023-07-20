@@ -1,0 +1,41 @@
+{
+    "ok": true,
+    "audio": [
+        {
+            "_id": "6478d7e3972d87fd99b93223",
+            "audioName": "Vitamin D",
+            "imageLink": "VitaminD.png",
+            "userId": "6478d743972d87fd99b93219",
+            "genre": "Pop",
+            "audioLink": "VitaminD.wav",
+            "nickName": "Monatik"
+        },
+        {
+            "_id": "6478d87b972d87fd99b93226",
+            "audioName": "Love it rhytm",
+            "imageLink": "Loveitrhytm.png",
+            "userId": "6478d743972d87fd99b93219",
+            "genre": "Pop",
+            "audioLink": "Loveitrhytm.wav",
+            "nickName": "Monatik"
+        },
+        {
+            "_id": "6478d9a8e659edee2021212d",
+            "audioName": "Earth song",
+            "imageLink": "Earthsong.png",
+            "userId": "6478d8db972d87fd99b93228",
+            "genre": "Pop",
+            "audioLink": "Earthsong.wav",
+            "nickName": "Michael Jackson"
+        },
+        {
+            "_id": "6478da1ee659edee2021213a",
+            "audioName": "Never gonna give you up",
+            "imageLink": "Nevergonnagiveyouup.png",
+            "userId": "6478d9ebe659edee2021212f",
+            "genre": "Pop",
+            "audioLink": "Nevergonnagiveyouup.wav",
+            "nickName": "Rick Astley"
+        }
+    ]
+}
