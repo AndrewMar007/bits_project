@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../../../core/values/config.dart';
 import '../models/user_model.dart';
 import '../repositories/validation_repository_impl.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +19,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<UserModel>? getUser(String? email, String? password) {
     Map<String, dynamic> userData = {'email': email, 'password': password};
-    return _getOrSendUser('http://192.168.137.1:3000/user', userData);
+    return _getOrSendUser('${getApiURl()}/user', userData);
   }
 
   @override
@@ -29,7 +30,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       'nickName': login,
     };
 
-    return _getOrSendUser('http://192.168.137.1:3000/users', userData);
+    return _getOrSendUser('${getApiURl()}/users', userData);
   }
 
   Future<UserModel>? _getOrSendUser(

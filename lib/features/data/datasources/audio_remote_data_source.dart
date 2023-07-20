@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import '../../../core/values/config.dart';
 import '../models/audio_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,8 +17,7 @@ class AudioRemoteDataSourceImpl implements AudioRemoteDataSource {
   @override
   Future<List<AudioModel>?>? getAudio({String? genre}) async {
     // final response = client.get(Uri.parse('http://192.168.137.1:3000/Pop'));
-    final response = await client.get(
-        Uri.parse('http://192.168.137.1:3000/$genre'),
+    final response = await client.get(Uri.parse('${getApiURl()}/$genre'),
         headers: {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
@@ -36,8 +36,7 @@ class AudioRemoteDataSourceImpl implements AudioRemoteDataSource {
   @override
   Future<bool>? sendAudio(AudioModel? audio) async {
     final audioJson = audio!.toJson();
-    final response = await client.post(
-        Uri.parse('http://192.168.137.1:3000/upload'),
+    final response = await client.post(Uri.parse('${getApiURl()}/upload'),
         body: json.encode(audioJson),
         headers: {'Content-Type': 'application/json'});
     if (kDebugMode) {
