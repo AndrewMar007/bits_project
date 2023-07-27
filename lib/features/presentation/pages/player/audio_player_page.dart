@@ -5,8 +5,6 @@ import 'package:bits_project/features/data/models/audio_model.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-
 import '../../../../core/values/config.dart';
 import '../../../../core/values/device_platform_scale.dart';
 import '../../widgets/buttons/neumorph_button.dart';
@@ -56,30 +54,28 @@ class _AudioPlayerPageState extends State<AudioPlayerPage>
 
   @override
   void initState() {
-    super.initState();
     String audio = widget.audioList![widget.index!].audioLink!;
     print(audio);
     audioPlayer.setSourceUrl('${getApiURl()}/$audio');
-    AudioPlayer.global.setGlobalAudioContext(audioContext);
-    audioPlayer.setSourceUrl('${getApiURl()}/$audio');
+    // AudioPlayer.global.setGlobalAudioContext(audioContext);
     //audioPlayer.setSourceUrl('http://192.168.137.1:3000/${widget.audioLink}');
     // setAudio();
-    audioPlayer.onPlayerStateChanged.listen((state) {
-      audioPlayer.setVolume(1);
-      isPlaying = state == PlayerState.playing;
-    });
+
     audioPlayer.onDurationChanged.listen((newDuration) {
       setState(() {
         duration = newDuration;
       });
     });
     audioPlayer.onPositionChanged.listen((newPosition) {
-      setState(() {
-        position = newPosition;
-      });
+      if (mounted) {
+        setState(() {
+          position = newPosition;
+        });
+      }
     });
     // audioPlayer.open(Audio('assets/audios/vitaminD.mp3'),
     //     autoStart: false, showNotification: true);
+    super.initState();
   }
 
   @override

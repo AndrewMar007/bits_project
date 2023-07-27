@@ -47,8 +47,9 @@ dependencies:
   get_it: ^7.6.0
   animated_text_kit: ^4.2.2
   rive: ^0.10.2
-  audioplayers: ^3.0.1
-  flutter_neumorphic: ^3.2.0
+  audioplayers: ^4.1.0
+  audioplayers_darwin: ^4.1.0
+  #flutter_neumorphic: ^3.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

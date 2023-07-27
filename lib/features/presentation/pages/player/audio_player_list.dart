@@ -33,22 +33,23 @@ class _AudioPlayerListPageState extends State<AudioPlayerListPage> {
 
   @override
   void initState() {
-    super.initState();
     // isPlaying = isPlaying;
     audioIndex = audioIndex;
     String audio = widget.audioList![audioIndex].audioLink!;
     print(audio);
     audioPlayer.setSourceUrl('${getApiURl()}/$audio');
-    AudioPlayer.global.setGlobalAudioContext(audioContext);
+    // AudioPlayer.global.setAudioContext(audioContext);
     audioPlayer.onDurationChanged.listen((newDuration) {
       setState(() {
         duration = newDuration;
       });
     });
     audioPlayer.onPositionChanged.listen((newPosition) {
-      setState(() {
-        position = newPosition;
-      });
+      if (mounted) {
+        setState(() {
+          position = newPosition;
+        });
+      }
     });
     // audioPlayer.setSourceUrl('${getApiURl()}/$audio');
     //audioPlayer.setSourceUrl('http://192.168.137.1:3000/${widget.audioLink}');
@@ -67,6 +68,7 @@ class _AudioPlayerListPageState extends State<AudioPlayerListPage> {
     //     position = newPosition;
     //   });
     // });
+    super.initState();
   }
 
   String formatTime(Duration duration) {
@@ -491,9 +493,6 @@ class _AudioPlayerListPageState extends State<AudioPlayerListPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    //_controller.dispose();
-
     audioPlayer.dispose();
     super.dispose();
   }
