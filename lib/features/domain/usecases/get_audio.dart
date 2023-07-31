@@ -4,10 +4,10 @@ import 'package:bits_project/features/domain/repositories/audio_repository.dart'
 
 class AudioCase implements AudioUseCase {
   AudioRepository repository;
-  AudioCase({required this.repository});
+  AudioCase(this.repository);
   @override
   Future<List<AudioModel>?>? callGetAudio({String? genre}) {
-    return repository.getAudio();
+    return repository.getAudio(genre: genre);
   }
 
   @override

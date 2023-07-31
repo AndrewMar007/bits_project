@@ -37,7 +37,7 @@ void main() {
       login: "Monatik");
   setUp(() {
     repository = MockAudioRepository();
-    useCase = AudioCase(repository: repository!);
+    useCase = AudioCase(repository!);
     registerFallbackValue(audioModel);
   });
 

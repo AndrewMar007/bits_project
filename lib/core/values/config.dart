@@ -133,7 +133,7 @@ List<RiveAsset> sideNavs = [
   //     title: "Help", stateMachineName: "CHAT_Interactivity", artboard: "CHAT"),
 ];
 
-List textParts = [
+List<String> textParts = [
   'LISTEN AGAIN',
   'MIXES OF YOUR MUSIC',
   'Hip-Hop music',

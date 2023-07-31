@@ -1,8 +1,12 @@
 import 'package:bits_project/features/data/repositories/audio_repository_impl.dart';
 import 'package:bits_project/features/domain/repositories/audio_repository.dart';
+import 'package:bits_project/features/presentation/bloc/audio_bloc.dart';
+import 'package:bits_project/features/presentation/bloc/audio_event.dart';
+import 'package:bits_project/features/presentation/bloc/audio_state.dart';
 import 'package:bits_project/features/presentation/pages/player/audio_player_list.dart';
 import 'package:bits_project/features/presentation/pages/player/audio_player_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/values/config.dart';
 import 'package:bits_project/features/presentation/injection_container.dart'
@@ -225,40 +229,36 @@ class _PlaylistViewState extends State<PlaylistView>
                                   top: size.height * 0.02 * widgetScalling),
                               child: SizedBox(
                                 height: size.height * 0.28 * widgetScalling,
-                                child: ListView.builder(
-                                  physics: const BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: _genres.length,
-                                  itemBuilder: (context, itemIndex) {
-                                    return ChangeNotifierProvider<
-                                            AudioRepository>(
+                                child: BlocProvider(
+                                  create: (context) =>
+                                      AudioBloc(getAudioUseCase: sl()),
+                                  child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _genres.length,
+                                    itemBuilder: (context, itemIndex) {
+                                      return BlocProvider(
                                         create: (context) =>
-                                            AudioRepositoryImpl(
-                                                remoteDataSource: sl(),
-                                                networkInfo: sl()),
+                                            AudioBloc(getAudioUseCase: sl()),
                                         child: VinylPlayList(
                                             genreKey: _genres[itemIndex],
                                             index: itemIndex),
-                                        builder: (context, child) {
-                                          return child!;
-                                        });
-                                  },
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         );
                       } else {
-                        return ChangeNotifierProvider<AudioRepository>(
-                            create: (context) => AudioRepositoryImpl(
-                                remoteDataSource: sl(), networkInfo: sl()),
-                            child: GenreList(
-                              genreKey: _genres[index],
-                              index: index,
-                            ),
-                            builder: (context, child) {
-                              return child!;
-                            });
+                        return BlocProvider(
+                          create: (context) => AudioBloc(getAudioUseCase: sl()),
+                          child: GenreList(
+                            genreKey: _genres[index],
+                            index: index,
+                          ),
+                        );
                       }
                     }),
               ),
@@ -278,12 +278,176 @@ class GenreList extends StatefulWidget {
 }
 
 class _GenreListState extends State<GenreList> {
-  late AudioRepository _provider;
+  // late AudioRepository _provider;
 
   @override
   void initState() {
-    _provider = Provider.of<AudioRepository>(context, listen: false);
-    _provider.getAudio(genre: widget.genreKey);
+    BlocProvider.of<AudioBloc>(context)
+        .add(FetchAudioEvent(genre: widget.genreKey));
+
+    // _provider = Provider.of<AudioRepository>(context, listen: false);
+    // _provider.getAudio(genre: widget.genreKey);
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double? widgetScalling = scaleSmallDevice(context);
+    double? textScale = textScaleRatio(context);
+    Size size = MediaQuery.of(context).size;
+
+    void showInSnackBar(String value) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Container(
+            decoration:
+                BoxDecoration(borderRadius: BorderRadius.circular(50.0)),
+            height: size.height * 0.04,
+            width: size.width * 1.0,
+            child: Center(
+              child: Text(
+                value,
+                style: const TextStyle(
+                    color: Colors.black, fontFamily: BitsFont.segoeItalicFont),
+              ),
+            )),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.white,
+      ));
+    }
+
+    return BlocBuilder<AudioBloc, AudioState>(
+        // listenWhen: (previous, current) {
+        //   return current is AudioInitial || current is AudioLoading;
+        // },
+
+        builder: (context, state) {
+      if (state is AudioLoading) {
+        const Center(
+          child: CircularProgressIndicator(),
+        );
+      } else if (state is AudioLoadedWithSuccess) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: size.width * 0.03 * widgetScalling!),
+              child: Text(
+                textParts[widget.index],
+                // audio.genre!,
+                textScaleFactor: 2.0 * textScale!,
+                style: TextStyle(
+                  shadows: <Shadow>[
+                    Shadow(
+                        blurRadius: 5.0,
+                        offset: const Offset(0, 0),
+                        color: TextGradients.gradientColors[widget.index]),
+                  ],
+                  foreground: Paint()
+                    ..shader = TextGradients.shaderList[widget.index],
+                  fontFamily: BitsFont.spaceMono,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: size.width * 0.03 * widgetScalling),
+              child: SizedBox(
+                height: size.height * 0.003 * widgetScalling,
+                width: size.width * 0.35 * widgetScalling,
+                child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          blurRadius: 5.0,
+                          offset: const Offset(1, 1),
+                          color: TextGradients.gradientColors[widget.index])
+                    ],
+                    borderRadius: BorderRadius.circular(30),
+                    gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors:
+                            TextGradients.dividerGradientList[widget.index]),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+              child: SizedBox(
+                height: size.height * 0.44 * widgetScalling,
+                child: GridView.count(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 0.0, vertical: 0.0),
+                  crossAxisSpacing: 15.0,
+                  mainAxisSpacing: 2.0,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  children: List.generate(
+                      state.trackList!.length < 5 ? state.trackList!.length : 4,
+                      (index) {
+                    return VinylAudioTileWidget(
+                      vinylName: state.trackList![index].audioName,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AudioPlayerPage(
+                                    index: index,
+                                    // index: index,
+                                    audioList: state.trackList,
+                                    // audioLink:
+                                    //     value.audioItem![
+                                    //             index][
+                                    //         'audioLink'],
+                                    // imageLink:
+                                    //     value.audioItem![
+                                    //             index][
+                                    //         'imageLink'],
+                                    // audioName:
+                                    //     value.audioItem![
+                                    //             index][
+                                    //         'audioName'],
+                                  )),
+                        );
+                      },
+                      author: state.trackList![index].login,
+                      mainImage: state.trackList![index].imageLink,
+                      vinylImage: state.trackList![index].imageLink,
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ],
+        );
+      } else if (state is AudioLoadedWithError) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => showInSnackBar(state.message));
+      }
+      return const Center(child: CircularProgressIndicator());
+    });
+  }
+}
+
+class VinylPlayList extends StatefulWidget {
+  final String genreKey;
+  final int index;
+  const VinylPlayList({super.key, required this.genreKey, required this.index});
+
+  @override
+  State<VinylPlayList> createState() => _VinylPlayListState();
+}
+
+class _VinylPlayListState extends State<VinylPlayList> {
+  @override
+  void initState() {
+    BlocProvider.of<AudioBloc>(context)
+        .add(FetchAudioEvent(genre: widget.genreKey));
 
     super.initState();
   }
@@ -294,87 +458,73 @@ class _GenreListState extends State<GenreList> {
     double? textScale = textScaleRatio(context);
 
     Size size = MediaQuery.of(context).size;
-    return Consumer<AudioRepository>(builder: (context, value, child) {
-      if (value.isLoadingData) {
-        return const Center(
+    return BlocBuilder<AudioBloc, AudioState>(builder: (context, state) {
+      if (state is AudioLoading) {
+        const Center(
           child: CircularProgressIndicator(),
         );
-      }
-      if (value.audioItem == null || value.audioItem!.isEmpty) {
-        return const Text('Error!');
-      }
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: size.width * 0.03 * widgetScalling!),
-            child: Text(
-              textParts[widget.index],
-              // audio.genre!,
-              textScaleFactor: 2.0 * textScale!,
-              style: TextStyle(
-                shadows: <Shadow>[
-                  Shadow(
-                      blurRadius: 5.0,
-                      offset: const Offset(0, 0),
-                      color: TextGradients.gradientColors[widget.index]),
-                ],
-                foreground: Paint()
-                  ..shader = TextGradients.shaderList[widget.index],
-                fontFamily: BitsFont.spaceMono,
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: size.width * 0.03 * widgetScalling),
-            child: SizedBox(
-              height: size.height * 0.003 * widgetScalling,
-              width: size.width * 0.35 * widgetScalling,
-              child: Container(
-                decoration: BoxDecoration(
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        blurRadius: 5.0,
-                        offset: const Offset(1, 1),
-                        color: TextGradients.gradientColors[widget.index])
-                  ],
-                  borderRadius: BorderRadius.circular(30),
-                  gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: TextGradients.dividerGradientList[widget.index]),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-            child: SizedBox(
-              height: size.height * 0.44 * widgetScalling,
-              child: GridView.count(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-                crossAxisSpacing: 15.0,
-                mainAxisSpacing: 2.0,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                children: List.generate(
-                    value.audioItem!.length < 5 ? value.audioItem!.length : 4,
-                    (index) {
-                  return VinylAudioTileWidget(
-                    vinylName: value.audioItem![index].audioName,
+      } else if (state is AudioLoadedWithSuccess) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Padding(
+            //   padding: EdgeInsets.symmetric(
+            //       horizontal: size.width * 0.03 * widgetScalling!),
+            //   child: Text(
+            //     textParts[widget.index],
+            //     // audio.genre!,
+            //     textScaleFactor: 2.0 * textScale!,
+            //     style: TextStyle(
+            //       shadows: <Shadow>[
+            //         Shadow(
+            //             blurRadius: 5.0,
+            //             offset: const Offset(0, 0),
+            //             color: TextGradients.gradientColors[widget.index]),
+            //       ],
+            //       foreground: Paint()
+            //         ..shader = TextGradients.shaderList[widget.index],
+            //       fontFamily: BitsFont.spaceMono,
+            //     ),
+            //   ),
+            // ),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(
+            //       horizontal: size.width * 0.03 * widgetScalling),
+            //   child: SizedBox(
+            //     height: size.height * 0.003 * widgetScalling,
+            //     width: size.width * 0.35 * widgetScalling,
+            //     child: Container(
+            //       decoration: BoxDecoration(
+            //         boxShadow: <BoxShadow>[
+            //           BoxShadow(
+            //               blurRadius: 5.0,
+            //               offset: const Offset(1, 1),
+            //               color: TextGradients.gradientColors[widget.index])
+            //         ],
+            //         borderRadius: BorderRadius.circular(30),
+            //         gradient: LinearGradient(
+            //             begin: Alignment.centerLeft,
+            //             end: Alignment.centerRight,
+            //             colors: TextGradients.dividerGradientList[widget.index]),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+              child: SizedBox(
+                  height: size.height * 0.44 * widgetScalling!,
+                  child: VinylPlaylistTile(
+                    vinylName: state.trackList![0].audioName,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AudioPlayerPage(
-                                  index: index,
+                            builder: (context) => AudioPlayerListPage(
                                   // index: index,
-                                  audioList: value.audioItem,
+                                  audioList: state.trackList,
                                   // audioLink:
                                   //     value.audioItem![
                                   //             index][
@@ -390,137 +540,15 @@ class _GenreListState extends State<GenreList> {
                                 )),
                       );
                     },
-                    author: value.audioItem![index].login,
-                    mainImage: value.audioItem![index].imageLink,
-                    vinylImage: value.audioItem![index].imageLink,
-                  );
-                }),
-              ),
+                    author: state.trackList![0].login,
+                    mainImage: state.trackList![0].imageLink,
+                    vinylImage: state.trackList![0].imageLink,
+                  )),
             ),
-          ),
-        ],
-      );
-    });
-  }
-}
-
-class VinylPlayList extends StatefulWidget {
-  final String genreKey;
-  final int index;
-  const VinylPlayList({super.key, required this.genreKey, required this.index});
-
-  @override
-  State<VinylPlayList> createState() => _VinylPlayListState();
-}
-
-class _VinylPlayListState extends State<VinylPlayList> {
-  late AudioRepository _provider;
-  @override
-  void initState() {
-    _provider = Provider.of<AudioRepository>(context, listen: false);
-    _provider.getAudio(genre: widget.genreKey);
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double? widgetScalling = scaleSmallDevice(context);
-    double? textScale = textScaleRatio(context);
-
-    Size size = MediaQuery.of(context).size;
-    return Consumer<AudioRepository>(builder: (context, value, child) {
-      if (value.isLoadingData) {
-        return const Center(
-          child: CircularProgressIndicator(),
+          ],
         );
       }
-      if (value.audioItem == null || value.audioItem!.isEmpty) {
-        return const Text('Error!');
-      }
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Padding(
-          //   padding: EdgeInsets.symmetric(
-          //       horizontal: size.width * 0.03 * widgetScalling!),
-          //   child: Text(
-          //     textParts[widget.index],
-          //     // audio.genre!,
-          //     textScaleFactor: 2.0 * textScale!,
-          //     style: TextStyle(
-          //       shadows: <Shadow>[
-          //         Shadow(
-          //             blurRadius: 5.0,
-          //             offset: const Offset(0, 0),
-          //             color: TextGradients.gradientColors[widget.index]),
-          //       ],
-          //       foreground: Paint()
-          //         ..shader = TextGradients.shaderList[widget.index],
-          //       fontFamily: BitsFont.spaceMono,
-          //     ),
-          //   ),
-          // ),
-          // Padding(
-          //   padding: EdgeInsets.symmetric(
-          //       horizontal: size.width * 0.03 * widgetScalling),
-          //   child: SizedBox(
-          //     height: size.height * 0.003 * widgetScalling,
-          //     width: size.width * 0.35 * widgetScalling,
-          //     child: Container(
-          //       decoration: BoxDecoration(
-          //         boxShadow: <BoxShadow>[
-          //           BoxShadow(
-          //               blurRadius: 5.0,
-          //               offset: const Offset(1, 1),
-          //               color: TextGradients.gradientColors[widget.index])
-          //         ],
-          //         borderRadius: BorderRadius.circular(30),
-          //         gradient: LinearGradient(
-          //             begin: Alignment.centerLeft,
-          //             end: Alignment.centerRight,
-          //             colors: TextGradients.dividerGradientList[widget.index]),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-            child: SizedBox(
-                height: size.height * 0.44 * widgetScalling!,
-                child: VinylPlaylistTile(
-                  vinylName: value.audioItem![0].audioName,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AudioPlayerListPage(
-                                // index: index,
-                                audioList: value.audioItem,
-                                // audioLink:
-                                //     value.audioItem![
-                                //             index][
-                                //         'audioLink'],
-                                // imageLink:
-                                //     value.audioItem![
-                                //             index][
-                                //         'imageLink'],
-                                // audioName:
-                                //     value.audioItem![
-                                //             index][
-                                //         'audioName'],
-                              )),
-                    );
-                  },
-                  author: value.audioItem![0].login,
-                  mainImage: value.audioItem![0].imageLink,
-                  vinylImage: value.audioItem![0].imageLink,
-                )),
-          ),
-        ],
-      );
+      return const Center(child: CircularProgressIndicator());
     });
   }
 }
