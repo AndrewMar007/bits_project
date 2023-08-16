@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 // ignore: body_might_complete_normally_nullable
-double? scaleSmallDevice(BuildContext context) {
+double scaleSmallDevice(BuildContext context) {
   final size = MediaQuery.of(context).size;
   if (Platform.isAndroid) {
     if (size.height < 700) {
@@ -18,7 +18,7 @@ double? scaleSmallDevice(BuildContext context) {
     if (size.height < 900) {
       return 1.03;
     }
-    return 1.03;
+    return 1.01;
   } else if (Platform.isIOS) {
     if (size.height < 700) {
       return 1.02;
@@ -34,10 +34,11 @@ double? scaleSmallDevice(BuildContext context) {
     }
     return 0.9;
   }
+  return 0.1;
 }
 
 // ignore: body_might_complete_normally_nullable
-double? textScaleRatio(BuildContext context) {
+double textScaleRatio(BuildContext context) {
   final size = MediaQuery.of(context).size;
   if (Platform.isAndroid) {
     if (size.height < 700) {
@@ -69,10 +70,11 @@ double? textScaleRatio(BuildContext context) {
     }
     return 0.85;
   }
+  return 0.1;
 }
 
 // ignore: body_might_complete_normally_nullable
-double? textFormTopRatio(BuildContext context) {
+double textFormTopRatio(BuildContext context) {
   final size = MediaQuery.of(context).size;
   if (Platform.isAndroid) {
     if (size.height < 700) {
@@ -104,4 +106,5 @@ double? textFormTopRatio(BuildContext context) {
     }
     return 0.1;
   }
+  return 0.1;
 }

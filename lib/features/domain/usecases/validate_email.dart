@@ -9,7 +9,7 @@ class ValidateEmail implements ValidationUsecase {
   ValidateEmail({required this.repository});
 
   @override
-  ValidationModel callValidation({required val}) {
-    return repository.validateEmail(val)!;
+  Future<ValidationModel> callValidation({required val}) async {
+    return repository.validateEmail(val);
   }
 }

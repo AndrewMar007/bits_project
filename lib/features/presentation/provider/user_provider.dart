@@ -8,5 +8,6 @@ class UserProvider extends ChangeNotifier {
 
   void setUser(UserModel user) {
     _user = user;
+    notifyListeners();
   }
 }

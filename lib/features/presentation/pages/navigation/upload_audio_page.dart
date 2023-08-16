@@ -13,9 +13,11 @@ import '../../../data/models/user_model.dart';
 import '../../provider/user_provider.dart';
 import '../../widgets/buttons/neumorph_button.dart';
 import '../../widgets/dropdown_menu.dart';
+import '../../widgets/overlay_player.dart';
 import '../../widgets/text_field_components/polymorphic_text_field.dart';
 import '../../widgets/vinyl_widgets/vinyl_widget.dart';
 import '../../widgets/vinyl_widgets/vinyl_widget_image.dart';
+import 'cupertino_bottom_bar.dart';
 
 class UploadAudioPage extends StatefulWidget {
   const UploadAudioPage({super.key});
@@ -45,6 +47,7 @@ class _UploadAudioPageState extends State<UploadAudioPage> {
 
   @override
   Widget build(BuildContext context) {
+    OverlayScreen.of(context);
     double? widgetScalling = scaleSmallDevice(context);
     double? textFormScale = textFormTopRatio(context);
     Size size = MediaQuery.of(context).size;
@@ -157,11 +160,11 @@ class _UploadAudioPageState extends State<UploadAudioPage> {
                 centerTitle: true,
                 title: Text(
                   'Upload music',
-                  textScaleFactor: 12.0 * textFormScale!,
+                  textScaleFactor: 12.0 * textFormScale,
                   style: const TextStyle(
                       color: Colors.black, fontFamily: BitsFont.bitsFont),
                 ),
-                toolbarHeight: size.height * 0.08 * widgetScalling!,
+                toolbarHeight: size.height * 0.08 * widgetScalling,
                 elevation: 0,
                 backgroundColor: Colors.transparent,
               ),
@@ -220,7 +223,7 @@ class _UploadAudioPageState extends State<UploadAudioPage> {
                     height: size.height * 0.05 * widgetScalling,
                     width: size.width * 0.3 * widgetScalling,
                     onTap: () {
-                      uploadAudio();
+                      // uploadAudio();
                     },
                   ),
                 ],

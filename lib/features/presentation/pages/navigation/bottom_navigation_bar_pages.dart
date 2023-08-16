@@ -71,7 +71,7 @@ final menuButtonList = <BottomNavigationBarItem>[
 ];
 int index = 0;
 final pageList = <Widget>[
-  const PlaylistView(),
+  //  PlaylistView(),
   const UploadAudioPage(),
 ];
 

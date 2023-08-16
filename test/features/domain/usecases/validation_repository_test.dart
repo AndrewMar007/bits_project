@@ -27,71 +27,73 @@ void main() {
 
   group('check call Validation', () {
     test('should get valid password value for Validation data from Repository',
-        () {
+        () async {
       when(() => mockValidationRepository.validatePassword(any()))
           .thenAnswer((_) {
-        return ValidationModel(val, null);
+        return Future(() => ValidationModel(val, null));
       });
 
-      final result = passwordUseCase.callValidation(val: val);
+      final result = await passwordUseCase.callValidation(val: val);
       expect(result, valModel);
       verify(() => mockValidationRepository.validatePassword(val));
       verifyNoMoreInteractions(mockValidationRepository);
     });
     test('should get valid email value for Validation data from Repository',
-        () {
+        () async {
       when(() => mockValidationRepository.validateEmail(any())).thenAnswer((_) {
-        return ValidationModel(val, null);
+        return Future(() => ValidationModel(val, null));
       });
 
-      final result = emailUseCase.callValidation(val: val);
+      final result = await emailUseCase.callValidation(val: val);
       expect(result, valModel);
       verify(() => mockValidationRepository.validateEmail(val));
       verifyNoMoreInteractions(mockValidationRepository);
     });
   });
 
-  test('should get valid error for Validation data from Response', () {
+  test('should get valid error for Validation data from Response', () async {
     when(() => mockValidationRepository.validateRequestResponse(any()))
         .thenAnswer((_) {
-      return ValidationModel(null, 'Email exist');
+      return Future(() => ValidationModel(null, 'Email exist'));
     });
-    final result = valResReqUseCase.callValidation(val: 403);
+    final result = await valResReqUseCase.callValidation(val: 403);
     expect(result, valModelError);
     verify(() => mockValidationRepository.validateRequestResponse(403));
     verifyNoMoreInteractions(mockValidationRepository);
   });
 
-  test('should return null value if validation email data is empty', () {
-    when(() => mockValidationRepository.validateEmail(any())).thenAnswer((_) {
+  test('should return null value if validation email data is empty', () async {
+    when(() => mockValidationRepository.validateEmail(any()))
+        .thenAnswer((_) async {
       return valModelError;
     });
 
-    final result = mockValidationRepository.validateEmail(val)!.error;
-    expect(result, valModelError.error);
+    final result = await mockValidationRepository.validateEmail(val);
+    expect(result.error, valModelError.error);
     verify(() => mockValidationRepository.validateEmail(val));
     verifyNoMoreInteractions(mockValidationRepository);
   });
 
   test(
       'should return error of password value for Validation data from Repository',
-      () {
+      () async {
     when(() => mockValidationRepository.validatePassword(any()))
-        .thenAnswer((_) {
+        .thenAnswer((_) async {
       return valModelError;
     });
 
-    final result = mockValidationRepository.validatePassword(null)!.error;
-    expect(result, valModelError.error);
+    final result = await mockValidationRepository.validatePassword(null);
+    expect(result.error, valModelError.error);
     verify(() => mockValidationRepository.validatePassword(null));
     verifyNoMoreInteractions(mockValidationRepository);
   });
-  test('should return a StatusCode exception when response wil be wrong', () {
+  test('should return a StatusCode exception when response wil be wrong',
+      () async {
     when(() => mockValidationRepository.validateRequestResponse(any()))
-        .thenAnswer((_) {
+        .thenAnswer((_) async {
       return valModelError;
     });
-    final result = mockValidationRepository.validateRequestResponse(403)!.error;
-    expect(result, valModelError.error);
+    final result = await mockValidationRepository.validateRequestResponse(403);
+    expect(result.error, valModelError.error);
   });
 }

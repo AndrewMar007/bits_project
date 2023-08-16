@@ -68,7 +68,7 @@ class _VinylWidgetImageState extends State<VinylWidgetImage>
         Padding(
           padding: const EdgeInsets.only(left: 130.0, top: 0),
           child: Container(
-            height: size.height * 0.25 * widgetScalling!,
+            height: size.height * 0.25 * widgetScalling,
             width: size.width * 0.5 * widgetScalling,
             decoration: const BoxDecoration(
               boxShadow: [

@@ -49,8 +49,7 @@ class _SeekWidgetState extends State<SeekWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
       children: <Widget>[
         SizedBox(
           width: widget.width,

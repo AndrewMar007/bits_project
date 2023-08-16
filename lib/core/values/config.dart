@@ -20,10 +20,10 @@ const AudioContext audioContext = AudioContext(
 
 String getApiURl() {
   if (Platform.isAndroid) {
-    return 'http://192.168.137.1:3000';
+    return 'http://192.168.1.102:3000';
   }
   if (Platform.isIOS) {
-    return 'http://192.168.1.106:3000';
+    return 'http://192.168.1.102:3000';
   }
   return 'http://192.168.1.105:3000';
 }

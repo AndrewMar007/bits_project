@@ -9,7 +9,7 @@ class ValidatePassword implements ValidationUsecase {
   ValidatePassword({required this.repository});
 
   @override
-  ValidationModel callValidation({required val}) {
-    return repository.validatePassword(val)!;
+  Future<ValidationModel> callValidation({required val}) async {
+    return repository.validatePassword(val);
   }
 }

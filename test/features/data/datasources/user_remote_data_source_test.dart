@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bits_project/core/values/config.dart';
 import 'package:bits_project/features/data/datasources/user_remote_data_source.dart';
 import 'package:bits_project/features/data/models/user_model.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -70,8 +71,7 @@ void main() {
       setUpMockHttpClientSuccess200();
       dataSource.getUser(email, password);
 
-      verify(() => mockUserHttpClient.post(
-          Uri.parse('http://192.168.137.1:3000/user'),
+      verify(() => mockUserHttpClient.post(Uri.parse('${getApiURl()}/user'),
           body: json.encode(loginData),
           headers: {'Content-Type': 'application/json'}));
     });
@@ -111,8 +111,7 @@ void main() {
       setUpMockHttpClientSuccess200ForSignIn();
       dataSource.sendUser(email, password, login);
 
-      verify(() => mockUserHttpClient.post(
-          Uri.parse('http://192.168.137.1:3000/users'),
+      verify(() => mockUserHttpClient.post(Uri.parse('${getApiURl()}/users'),
           body: json.encode(loginData),
           headers: {'Content-Type': 'application/json'}));
     });

@@ -114,7 +114,7 @@ class _VinylPlaylistTileState extends State<VinylPlaylistTile>
 
           Padding(
             padding: EdgeInsets.only(
-                right: 0.0, top: size.height * 0.015 * widgetScalling!),
+                right: 0.0, top: size.height * 0.015 * widgetScalling),
             child: Stack(children: [
               SizedBox(
                 //color: Colors.black,

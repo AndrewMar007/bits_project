@@ -1,4 +1,3 @@
-import 'package:bits_project/features/data/models/user_model.dart';
 import 'package:bits_project/features/presentation/pages/authorization/main_page.dart';
 import 'package:bits_project/features/presentation/provider/user_provider.dart';
 import 'package:flutter/foundation.dart';
@@ -33,7 +32,6 @@ class _SignUpPageState extends State<SignUpPage> {
     double? textScale = textScaleRatio(context);
     double? textFormScale = textFormTopRatio(context);
     UserRepositoryImpl auth = Provider.of<UserRepositoryImpl>(context);
-    UserModel? user = Provider.of<UserProvider>(context).user;
     ValidationRepositoryImpl validationRepo =
         Provider.of<ValidationRepositoryImpl>(context);
 
@@ -76,7 +74,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     Size size = MediaQuery.of(context).size;
-    double height = size.height * 0.45 * widgetScalling!;
+    double height = size.height * 0.45 * widgetScalling;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -130,7 +128,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               bottom: size.height * 0.1 * widgetScalling,
                             ),
                             child: Text('Registration',
-                                textScaleFactor: 5.0 * textScale!,
+                                textScaleFactor: 5.0 * textScale,
                                 style: const TextStyle(
                                     shadows: [
                                       Shadow(
@@ -155,7 +153,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                         textScaleFactor: 1.4 * textScale),
                                     child: PolimorphicFormField(
                                       contHeight:
-                                          size.height * 0.16 * textFormScale!,
+                                          size.height * 0.16 * textFormScale,
                                       contWidth:
                                           size.width * 0.06 * widgetScalling,
                                       width: size.width * 2.2 * widgetScalling,
@@ -311,12 +309,12 @@ class _SignUpPageState extends State<SignUpPage> {
                                 //       ? print('loading...')
                                 //       : doRegister();
                                 // }
-                                if (validEmail!.value == null &&
-                                    validPassword!.value == null) {
-                                  setState(() {
-                                    _validate = true;
-                                  });
-                                }
+                                // if (validEmail!.value == null &&
+                                //     validPassword!.value == null) {
+                                //   setState(() {
+                                //     _validate = true;
+                                //   });
+                                // }
                                 if (validationRepo.email.value != null &&
                                     validationRepo.password.value != null) {
                                   setState(() {

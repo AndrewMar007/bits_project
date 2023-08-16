@@ -7,12 +7,12 @@ import 'package:mocktail/mocktail.dart';
 class MockUserRepository extends Mock implements UserRepository {}
 
 void main() {
-  GetUser? usecase;
+  FetchUser? usecase;
   MockUserRepository? mockUserRepository;
 
   setUp(() {
     mockUserRepository = MockUserRepository();
-    usecase = GetUser(mockUserRepository!);
+    usecase = FetchUser(mockUserRepository!);
   });
 
   const email = 'andy@gmail.com';

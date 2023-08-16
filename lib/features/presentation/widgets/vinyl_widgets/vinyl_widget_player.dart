@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import '../../../../core/values/device_platform_scale.dart';
 
 class VinylAudioPlayerWidget extends StatefulWidget {
-  String mainImage;
-  String vinylImage;
-  bool? isAnimated;
-  Function()? onTap;
-  VinylAudioPlayerWidget(
+  final String mainImage;
+  final String vinylImage;
+  final bool? isAnimated;
+  final Function()? onTap;
+  const VinylAudioPlayerWidget(
       {this.onTap,
       this.isAnimated,
       super.key,
@@ -32,7 +32,7 @@ class _VinylAudioPlayerWidgetState extends State<VinylAudioPlayerWidget>
   );
   @override
   void initState() {
-    print(widget.isAnimated);
+    // print(widget.isAnimated);
 
     //   if (widget.isAnimated == true) {
     //     print("hello");
@@ -66,8 +66,8 @@ class _VinylAudioPlayerWidgetState extends State<VinylAudioPlayerWidget>
           Padding(
             padding: const EdgeInsets.only(left: 120.0, top: 50),
             child: Container(
-              height: size.height * 0.16 * widgetScalling!,
-              width: size.width * 0.36 * widgetScalling,
+              height: size.height * 0.2 * widgetScalling,
+              width: size.width * 0.4 * widgetScalling,
               decoration: const BoxDecoration(
                 boxShadow: [
                   // BoxShadow(
@@ -93,8 +93,8 @@ class _VinylAudioPlayerWidgetState extends State<VinylAudioPlayerWidget>
                 turns: _animation,
                 child: Stack(children: [
                   Container(
-                    height: size.height * 0.36 * widgetScalling,
-                    width: size.width * 0.36 * widgetScalling,
+                    height: size.height * 0.4 * widgetScalling,
+                    width: size.width * 0.4 * widgetScalling,
                     decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
@@ -104,8 +104,8 @@ class _VinylAudioPlayerWidgetState extends State<VinylAudioPlayerWidget>
                   ),
                   Center(
                     child: Container(
-                      height: size.height * 0.05 * widgetScalling,
-                      width: size.width * 0.13 * widgetScalling,
+                      height: size.height * 0.07 * widgetScalling,
+                      width: size.width * 0.18 * widgetScalling,
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
@@ -119,10 +119,10 @@ class _VinylAudioPlayerWidgetState extends State<VinylAudioPlayerWidget>
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 0.0, top: 20.0),
+            padding: const EdgeInsets.only(left: 0.0, top: 40.0),
             child: Container(
-              height: size.height * 0.22 * widgetScalling,
-              width: size.width * 0.44 * widgetScalling,
+              height: size.height * 0.24 * widgetScalling,
+              width: size.width * 0.48 * widgetScalling,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.0),
                 image: DecorationImage(
@@ -164,7 +164,6 @@ class _VinylAudioPlayerWidgetState extends State<VinylAudioPlayerWidget>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _controller.dispose();
 
     super.dispose();

@@ -14,7 +14,7 @@ class ValidationRepositoryImpl
   ValidationModel get password => _password;
 
   @override
-  ValidationModel? validateEmail(String? val) {
+  Future<ValidationModel> validateEmail(String? val) async {
     if (val != null && val.isValidEmail) {
       _email = ValidationModel(val, null);
       return _email;
@@ -28,7 +28,7 @@ class ValidationRepositoryImpl
   }
 
   @override
-  ValidationModel? validatePassword(String? val) {
+  Future<ValidationModel> validatePassword(String? val) async {
     if (val != null && val.isValidPassword) {
       _password = ValidationModel(val, null);
       return _password;
@@ -43,7 +43,7 @@ class ValidationRepositoryImpl
   }
 
   @override
-  ValidationModel? validateRequestResponse(int val) {
+  Future<ValidationModel> validateRequestResponse(int val) async {
     if (val == 400) {
       _email == ValidationModel(null, 'Bad request');
       return _email;

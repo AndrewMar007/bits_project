@@ -1,18 +1,14 @@
-import 'dart:io';
-
 import 'package:bits_project/core/values/config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 import '../../../../core/values/device_platform_scale.dart';
 
 class VinylAudioWidget extends StatefulWidget {
-  String mainImage;
-  String vinylImage;
-  bool? isAnimated;
-  Function()? onTap;
-  VinylAudioWidget(
+  final String mainImage;
+  final String vinylImage;
+  final bool? isAnimated;
+  final Function()? onTap;
+  const VinylAudioWidget(
       {this.onTap,
       this.isAnimated,
       super.key,
@@ -36,7 +32,7 @@ class _VinylAudioWidgetState extends State<VinylAudioWidget>
   );
   @override
   void initState() {
-    print(widget.isAnimated);
+    // print(widget.isAnimated);
 
     //   if (widget.isAnimated == true) {
     //     print("hello");
@@ -70,7 +66,7 @@ class _VinylAudioWidgetState extends State<VinylAudioWidget>
           Padding(
             padding: const EdgeInsets.only(left: 100.0, top: 30),
             child: Container(
-              height: size.height * 0.1 * widgetScalling!,
+              height: size.height * 0.1 * widgetScalling,
               width: size.width * 0.2 * widgetScalling,
               decoration: const BoxDecoration(
                 boxShadow: [
@@ -168,7 +164,6 @@ class _VinylAudioWidgetState extends State<VinylAudioWidget>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _controller.dispose();
 
     super.dispose();

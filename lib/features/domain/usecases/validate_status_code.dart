@@ -1,4 +1,5 @@
 import '../../../core/usecases/validation_usecase.dart';
+import '../../data/models/validation_model.dart';
 import '../repositories/validation_repository.dart';
 
 class ValidateStatusCode implements ValidationUsecase {
@@ -6,7 +7,7 @@ class ValidateStatusCode implements ValidationUsecase {
 
   ValidateStatusCode({required this.repository});
   @override
-  callValidation({required val}) {
-    return repository.validateRequestResponse(val)!;
+  Future<ValidationModel?> callValidation({required val}) async {
+    return repository.validateRequestResponse(val);
   }
 }

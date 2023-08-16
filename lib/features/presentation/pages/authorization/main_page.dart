@@ -26,10 +26,10 @@ class _MainPageState extends State<MainPage> {
             Text(user.login!),
             TextButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) {
-                    return const PlaylistView();
-                  }));
+                  // Navigator.pushReplacement(context,
+                  //     MaterialPageRoute(builder: (context) {
+                  //   return const PlaylistView();
+                  // }));
                 },
                 child: const Text('OpenListView'))
           ],

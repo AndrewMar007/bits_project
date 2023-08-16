@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bits_project/core/values/config.dart';
 import 'package:bits_project/features/data/datasources/audio_remote_data_source.dart';
 import 'package:bits_project/features/data/models/audio_model.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -85,8 +86,7 @@ void main() {
 
       dataSource.sendAudio(audio);
       final audioMap = audio.toJson();
-      verify(() => mockAudioHttpClient.post(
-          Uri.parse('http://192.168.137.1:3000/upload'),
+      verify(() => mockAudioHttpClient.post(Uri.parse('${getApiURl()}/upload'),
           body: json.encode(audioMap),
           headers: {'Content-Type': 'application/json'}));
     });

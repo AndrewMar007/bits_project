@@ -2,8 +2,6 @@ import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bits_project/core/values/config.dart';
-import 'package:bits_project/features/presentation/widgets/buttons/neumorph_button.dart';
-import 'package:bits_project/features/presentation/widgets/vinyl_widgets/vinyl_widget.dart';
 import 'package:bits_project/features/presentation/widgets/vinyl_widgets/vinyl_widget_audio.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/values/device_platform_scale.dart';
@@ -36,7 +34,7 @@ class _AudioPlayerListPageState extends State<AudioPlayerListPage> {
     // isPlaying = isPlaying;
     audioIndex = audioIndex;
     String audio = widget.audioList![audioIndex].audioLink!;
-    print(audio);
+    // print(audio);
     audioPlayer.setSourceUrl('${getApiURl()}/$audio');
     // AudioPlayer.global.setAudioContext(audioContext);
     audioPlayer.onDurationChanged.listen((newDuration) {
@@ -104,7 +102,7 @@ class _AudioPlayerListPageState extends State<AudioPlayerListPage> {
   @override
   Widget build(BuildContext context) {
     double? widgetScalling = scaleSmallDevice(context);
-    double? textScale = textScaleRatio(context);
+
     double? textFormScale = textFormTopRatio(context);
     Size size = MediaQuery.of(context).size;
 
@@ -128,11 +126,11 @@ class _AudioPlayerListPageState extends State<AudioPlayerListPage> {
         centerTitle: true,
         title: Text(
           'Album of ${widget.audioList![audioIndex].genre} music',
-          textScaleFactor: 12.0 * textFormScale!,
+          textScaleFactor: 12.0 * textFormScale,
           style: const TextStyle(
               color: Colors.black, fontFamily: BitsFont.bitsFont),
         ),
-        toolbarHeight: size.height * 0.08 * widgetScalling!,
+        toolbarHeight: size.height * 0.08 * widgetScalling,
         elevation: 0,
         backgroundColor: const Color.fromARGB(0, 20, 20, 20),
       ),
@@ -387,16 +385,16 @@ class _AudioPlayerListPageState extends State<AudioPlayerListPage> {
                                   }
                                 }
                                 if (isRandom == true) {
-                                  int randomNumber =
-                                      random.nextInt(widget.audioList!.length);
+                                  // int randomNumber =
+                                  //     random.nextInt(widget.audioList!.length);
                                   if (audioIndex >= 0) {
                                     indexPrev--;
-                                    print(audioIndex);
+                                    // print(audioIndex);
 
                                     if (indexPrev > 0) {
                                       audioIndex = previosAudioList[indexPrev];
                                       previosAudioList.removeAt(indexPrev);
-                                      print("Hello - " + audioIndex.toString());
+                                      // print("Hello - " + audioIndex.toString());
                                     } else {
                                       audioIndex = 0;
                                     }
@@ -436,9 +434,9 @@ class _AudioPlayerListPageState extends State<AudioPlayerListPage> {
                                     audioIndex = randomNumber;
                                     indexPrev++;
                                     previosAudioList.add(audioIndex);
-                                    print(previosAudioList);
-                                    print(audioIndex);
-                                    print("Bye - " + indexPrev.toString());
+                                    // print(previosAudioList);
+                                    // print(audioIndex);
+                                    // print("Bye - " + indexPrev.toString());
                                   }
                                   if (audioIndex >= widget.audioList!.length) {
                                     audioIndex = 0;
@@ -446,7 +444,7 @@ class _AudioPlayerListPageState extends State<AudioPlayerListPage> {
                                 } else {
                                   if (audioIndex < widget.audioList!.length) {
                                     audioIndex = audioIndex + 1;
-                                    print(audioIndex);
+                                    // print(audioIndex);
                                   }
                                   if (audioIndex >= widget.audioList!.length) {
                                     audioIndex = 0;

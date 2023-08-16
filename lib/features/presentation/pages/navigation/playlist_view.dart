@@ -1,19 +1,19 @@
-import 'package:bits_project/features/data/repositories/audio_repository_impl.dart';
-import 'package:bits_project/features/domain/repositories/audio_repository.dart';
-import 'package:bits_project/features/presentation/bloc/audio_bloc.dart';
-import 'package:bits_project/features/presentation/bloc/audio_event.dart';
-import 'package:bits_project/features/presentation/bloc/audio_state.dart';
+import 'package:bits_project/features/presentation/bloc/audio_bloc/audio_bloc.dart';
+import 'package:bits_project/features/presentation/bloc/audio_bloc/audio_state.dart';
+import 'package:bits_project/features/presentation/pages/navigation/bottom_navigation_bar_pages.dart';
+import 'package:bits_project/features/presentation/pages/navigation/cupertino_bottom_bar.dart';
 import 'package:bits_project/features/presentation/pages/player/audio_player_list.dart';
 import 'package:bits_project/features/presentation/pages/player/audio_player_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/values/config.dart';
-import 'package:bits_project/features/presentation/injection_container.dart'
-    as di;
 import 'package:bits_project/features/presentation/injection_container.dart';
 import '../../../../core/values/device_platform_scale.dart';
 import '../../../../core/values/gradients.dart';
+import '../../../data/models/audio_model.dart';
+import '../../bloc/audio_bloc/audio_event.dart';
+import '../../provider/audio_provider.dart';
 import '../../widgets/buttons/text_button_main_list.dart';
 import '../../widgets/vinyl_widgets/vinyl_widget_playlist_tile.dart';
 import '../../widgets/vinyl_widgets/vinyl_widget_tile.dart';
@@ -25,150 +25,39 @@ class PlaylistView extends StatefulWidget {
   State<PlaylistView> createState() => _PlaylistViewState();
 }
 
-class _PlaylistViewState extends State<PlaylistView>
-    with SingleTickerProviderStateMixin {
+class _PlaylistViewState extends State<PlaylistView> {
   static const _genres = genres;
   int index = 0;
+  late double _widgetScalling;
+  late double _textScale;
+  late double _textFormScale;
+  late Size _size;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _widgetScalling = scaleSmallDevice(context);
+    _textScale = textScaleRatio(context);
+    _textFormScale = textFormTopRatio(context);
+    _size = MediaQuery.of(context).size;
+  }
 
   @override
   Widget build(BuildContext context) {
-    double? widgetScalling = scaleSmallDevice(context);
-    double? textScale = textScaleRatio(context);
-    double? textFormScale = textFormTopRatio(context);
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 18, 10, 19),
         body: Stack(
           children: [
-            //   Image(
-            //   height: size.height,
-            //   width: size.width,
-            //   image: AssetImage('lib/images/back_3.png'),
-            //   fit: BoxFit.fill,
-            // ),
             NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                SliverAppBar(
-                  expandedHeight: 130,
-                  toolbarHeight: 130,
-                  collapsedHeight: 130,
-                  elevation: 0.0,
-                  backgroundColor: const Color.fromARGB(0, 247, 14, 14),
-                  actions: [
-                    Stack(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: size.width * 0.1 * widgetScalling!,
-                                  top: size.height * 0.01 * widgetScalling),
-                              child: Image.asset('assets/images/logo_app.png',
-                                  fit: BoxFit.fill,
-                                  width: size.width * 0.2 * widgetScalling,
-                                  height: size.height * 0.1 * widgetScalling),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: size.width * 0.1 * widgetScalling),
-                              child: Container(
-                                height: size.height * 0.03 * widgetScalling,
-                                width: size.width * 0.43 * widgetScalling,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    border: Border.all(
-                                        color: const Color.fromARGB(
-                                            255, 0, 247, 255))),
-                                child: MediaQuery(
-                                  data: MediaQuery.of(context).copyWith(
-                                      textScaleFactor: 1.0 * textScale!),
-                                  child: TextFormField(
-                                    cursorWidth: 1.0,
-                                    cursorColor:
-                                        const Color.fromARGB(255, 236, 39, 243),
-                                    style: const TextStyle(
-                                        color: Color.fromARGB(255, 0, 247, 255),
-                                        fontFamily: BitsFont.segoeItalicFont),
-                                    decoration: InputDecoration(
-                                      focusColor: Colors.transparent,
-                                      hintText: 'Search...',
-                                      hintStyle: const TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 0, 247, 255),
-                                          fontFamily: BitsFont.spaceMono),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: size.height *
-                                              0.12 *
-                                              textFormScale!,
-                                          horizontal:
-                                              size.width * 0.3 * textFormScale),
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      size.width * 0.03 * widgetScalling),
-                              child: GestureDetector(
-                                onTap: () {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (context) => const UserPage()),
-                                  // );
-                                },
-                                child: Container(
-                                  height: 25,
-                                  width: 25,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      border: Border.all(color: Colors.white)),
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.person,
-                                      color: Colors.white,
-                                      size: 15,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: size.height * 0.12 * widgetScalling),
-                          child: SizedBox(
-                            height: size.height * 0.05,
-                            width: size.width,
-                            child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: textButtons.length,
-                              itemBuilder: (context, index) {
-                                return TextButtonHome(
-                                  height: 0,
-                                  width: 100,
-                                  text: textButtons[index],
-                                  fontSize: 1.5 * textScale,
-                                  shader: listGradient[index],
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                SliverAppBarWidget(
+                    size: _size,
+                    widgetScalling: _widgetScalling,
+                    textScale: _textScale,
+                    textFormScale: _textFormScale),
               ],
               body: SizedBox(
-                height: MediaQuery.of(context).size.height,
+                height: _size.height,
                 child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: _genres.length,
@@ -180,11 +69,11 @@ class _PlaylistViewState extends State<PlaylistView>
                             Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal:
-                                      size.width * 0.03 * widgetScalling!),
+                                      _size.width * 0.03 * _widgetScalling),
                               child: Text(
                                 textParts[1],
                                 // audio.genre!,
-                                textScaleFactor: 2.0 * textScale!,
+                                textScaleFactor: 2.0 * _textScale,
                                 style: TextStyle(
                                   shadows: <Shadow>[
                                     Shadow(
@@ -201,10 +90,10 @@ class _PlaylistViewState extends State<PlaylistView>
                             Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal:
-                                      size.width * 0.03 * widgetScalling),
+                                      _size.width * 0.03 * _widgetScalling),
                               child: SizedBox(
-                                height: size.height * 0.003 * widgetScalling,
-                                width: size.width * 0.35 * widgetScalling,
+                                height: _size.height * 0.003 * _widgetScalling,
+                                width: _size.width * 0.35 * _widgetScalling,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     boxShadow: <BoxShadow>[
@@ -226,15 +115,16 @@ class _PlaylistViewState extends State<PlaylistView>
                             ),
                             Padding(
                               padding: EdgeInsets.only(
-                                  top: size.height * 0.02 * widgetScalling),
+                                  top: _size.height * 0.02 * _widgetScalling),
                               child: SizedBox(
-                                height: size.height * 0.28 * widgetScalling,
+                                height: _size.height * 0.28 * _widgetScalling,
                                 child: BlocProvider(
                                   create: (context) =>
                                       AudioBloc(getAudioUseCase: sl()),
                                   child: ListView.builder(
                                     physics: const BouncingScrollPhysics(),
                                     scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
                                     itemCount: _genres.length,
                                     itemBuilder: (context, itemIndex) {
                                       return BlocProvider(
@@ -268,6 +158,150 @@ class _PlaylistViewState extends State<PlaylistView>
   }
 }
 
+class SliverAppBarWidget extends StatelessWidget {
+  const SliverAppBarWidget({
+    super.key,
+    required this.size,
+    required this.widgetScalling,
+    required this.textScale,
+    required this.textFormScale,
+  });
+
+  final Size size;
+  final double widgetScalling;
+  final double textScale;
+  final double textFormScale;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      expandedHeight: 130,
+      toolbarHeight: 130,
+      collapsedHeight: 130,
+      elevation: 0.0,
+      backgroundColor: const Color.fromARGB(0, 247, 14, 14),
+      actions: [
+        Stack(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: size.width * 0.1 * widgetScalling,
+                      top: size.height * 0.01 * widgetScalling),
+                  child: Image.asset('assets/images/logo_app.png',
+                      fit: BoxFit.fill,
+                      width: size.width * 0.2 * widgetScalling,
+                      height: size.height * 0.1 * widgetScalling),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(left: size.width * 0.1 * widgetScalling),
+                  child: Container(
+                    height: size.height * 0.03 * widgetScalling,
+                    width: size.width * 0.43 * widgetScalling,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                            color: const Color.fromARGB(255, 0, 247, 255))),
+                    child: MediaQuery(
+                      data: MediaQuery.of(context)
+                          .copyWith(textScaleFactor: 1.0 * textScale),
+                      child: TextFormField(
+                        cursorWidth: 1.0,
+                        cursorColor: const Color.fromARGB(255, 236, 39, 243),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 0, 247, 255),
+                            fontFamily: BitsFont.segoeItalicFont),
+                        decoration: InputDecoration(
+                          focusColor: Colors.transparent,
+                          hintText: 'Search...',
+                          hintStyle: const TextStyle(
+                              color: Color.fromARGB(255, 0, 247, 255),
+                              fontFamily: BitsFont.spaceMono),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: size.height * 0.12 * textFormScale,
+                              horizontal: size.width * 0.3 * textFormScale),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                AccountSettingsButtonWidget(
+                    size: size, widgetScalling: widgetScalling)
+              ],
+            ),
+            Padding(
+              padding:
+                  EdgeInsets.only(top: size.height * 0.12 * widgetScalling),
+              child: SizedBox(
+                height: size.height * 0.05,
+                width: size.width,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: textButtons.length,
+                  itemBuilder: (context, index) {
+                    return TextButtonHome(
+                      height: 0,
+                      width: 100,
+                      text: textButtons[index],
+                      fontSize: 1.5 * textScale,
+                      shader: listGradient[index],
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class AccountSettingsButtonWidget extends StatelessWidget {
+  const AccountSettingsButtonWidget({
+    super.key,
+    required this.size,
+    required this.widgetScalling,
+  });
+
+  final Size size;
+  final double widgetScalling;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+          EdgeInsets.symmetric(horizontal: size.width * 0.03 * widgetScalling),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, '/five');
+        },
+        child: Container(
+          height: 25,
+          width: 25,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              border: Border.all(color: Colors.white)),
+          child: const Center(
+            child: Icon(
+              Icons.person,
+              color: Colors.white,
+              size: 15,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class GenreList extends StatefulWidget {
   final String genreKey;
   final int index;
@@ -278,32 +312,111 @@ class GenreList extends StatefulWidget {
 }
 
 class _GenreListState extends State<GenreList> {
-  // late AudioRepository _provider;
-
+  late double _widgetScalling;
+  late double _textScale;
+  late Size _size;
+  OverlayEntry? entry;
+  Offset offset = Offset(20, 40);
+  double? _positionOfOverlay;
+  double? horizontalPosition;
+  double? height;
+  double? width;
+  double opacity = 1.0;
+  double opacity1 = 1.0;
+  bool isHideMainPAge = false;
+  late int _audioProvider;
   @override
   void initState() {
+    super.initState();
     BlocProvider.of<AudioBloc>(context)
         .add(FetchAudioEvent(genre: widget.genreKey));
+  }
 
-    // _provider = Provider.of<AudioRepository>(context, listen: false);
-    // _provider.getAudio(genre: widget.genreKey);
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _widgetScalling = scaleSmallDevice(context);
+    _textScale = textScaleRatio(context);
+    _size = MediaQuery.of(context).size;
+  }
 
-    super.initState();
+  void _insertOverlay(
+      BuildContext context, Size size, List<AudioModel>? audioList, int index) {
+    entry = OverlayEntry(builder: (context) {
+      return Align(
+        alignment: Alignment.bottomCenter,
+        child: GestureDetector(
+            onVerticalDragUpdate: (details) {
+              index = _audioProvider;
+              height = size.height - details.globalPosition.dy;
+              // opacity = details.globalPosition.dy;
+              print("Current index - " + index.toString());
+
+              final position = details.globalPosition.dy / 600;
+              if (1 > position && position > 0) {
+                setState(() {
+                  opacity = opacity1 - details.globalPosition.dy / 600;
+                });
+              } else if (position > 1 && opacity != 1) {
+                opacity = 0;
+              } else if (position < 0 && opacity != 0) {
+                opacity = 1;
+              }
+
+              entry!.markNeedsBuild();
+              height! < 30 ? height = 50 : height!;
+            },
+            onVerticalDragEnd: (details) {
+              if (height! < size.height * 0.5) {
+                opacity = 0.0;
+                entry!.markNeedsBuild();
+                height = 30;
+              } else {
+                opacity = 1.0;
+                height = size.height;
+                entry!.markNeedsBuild();
+              }
+            },
+            child: Stack(
+              children: [
+                Container(
+                  height: 30,
+                  width: size.width,
+                  color: Colors.red,
+                ),
+                AnimatedOpacity(
+                    duration: Duration(milliseconds: 1),
+                    curve: Curves.bounceIn,
+                    opacity: opacity,
+                    child: Container(
+                        color: Colors.black,
+                        height: height,
+                        width: size.width,
+                        child: AudioPlayerPage(
+                          entry: entry!,
+                          audioList: audioList,
+                          index: index,
+                        ))),
+              ],
+            )),
+      );
+    });
+    final overlay = Overlay.of(context);
+    overlay.insert(entry!);
   }
 
   @override
   Widget build(BuildContext context) {
-    double? widgetScalling = scaleSmallDevice(context);
-    double? textScale = textScaleRatio(context);
-    Size size = MediaQuery.of(context).size;
+    _audioProvider = Provider.of<AudioProvider>(context).index;
 
+    print("Hello - " + _audioProvider.toString());
     void showInSnackBar(String value) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Container(
             decoration:
                 BoxDecoration(borderRadius: BorderRadius.circular(50.0)),
-            height: size.height * 0.04,
-            width: size.width * 1.0,
+            height: _size.height * 0.04,
+            width: _size.width * 1.0,
             child: Center(
               child: Text(
                 value,
@@ -333,11 +446,11 @@ class _GenreListState extends State<GenreList> {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.03 * widgetScalling!),
+                  horizontal: _size.width * 0.03 * _widgetScalling),
               child: Text(
                 textParts[widget.index],
                 // audio.genre!,
-                textScaleFactor: 2.0 * textScale!,
+                textScaleFactor: 2.0 * _textScale,
                 style: TextStyle(
                   shadows: <Shadow>[
                     Shadow(
@@ -353,10 +466,10 @@ class _GenreListState extends State<GenreList> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.03 * widgetScalling),
+                  horizontal: _size.width * 0.03 * _widgetScalling),
               child: SizedBox(
-                height: size.height * 0.003 * widgetScalling,
-                width: size.width * 0.35 * widgetScalling,
+                height: _size.height * 0.003 * _widgetScalling,
+                width: _size.width * 0.35 * _widgetScalling,
                 child: Container(
                   decoration: BoxDecoration(
                     boxShadow: <BoxShadow>[
@@ -379,7 +492,7 @@ class _GenreListState extends State<GenreList> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
               child: SizedBox(
-                height: size.height * 0.44 * widgetScalling,
+                height: _size.height * 0.44 * _widgetScalling,
                 child: GridView.count(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 0.0, vertical: 0.0),
@@ -393,27 +506,33 @@ class _GenreListState extends State<GenreList> {
                     return VinylAudioTileWidget(
                       vinylName: state.trackList![index].audioName,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AudioPlayerPage(
-                                    index: index,
-                                    // index: index,
-                                    audioList: state.trackList,
-                                    // audioLink:
-                                    //     value.audioItem![
-                                    //             index][
-                                    //         'audioLink'],
-                                    // imageLink:
-                                    //     value.audioItem![
-                                    //             index][
-                                    //         'imageLink'],
-                                    // audioName:
-                                    //     value.audioItem![
-                                    //             index][
-                                    //         'audioName'],
-                                  )),
-                        );
+                        keyGlobal.currentState!.createOverlay(context, _size,
+                            state.trackList, _audioProvider, _widgetScalling);
+                        // _insertOverlay(
+                        //     context, _size, state.trackList, _audioProvider);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       // builder: (context) => const TestAnimationWidget()
+                        //       builder: (context) => AudioPlayerPage(
+                        //         index: index,
+                        //         // index: index,
+                        //         audioList: state.trackList,
+                        //         // audioLink:
+                        //         //     value.audioItem![
+                        //         //             index][
+                        //         //         'audioLink'],
+                        //         // imageLink:
+                        //         //     value.audioItem![
+                        //         //             index][
+                        //         //         'imageLink'],
+                        //         // audioName:
+                        //         //     value.audioItem![
+                        //         //             index][
+                        //         //         'audioName'],
+                        //       ),
+                        //       ),
+                        // );
                       },
                       author: state.trackList![index].login,
                       mainImage: state.trackList![index].imageLink,
@@ -444,20 +563,24 @@ class VinylPlayList extends StatefulWidget {
 }
 
 class _VinylPlayListState extends State<VinylPlayList> {
+  late double _widgetScalling;
+  late Size _size;
   @override
   void initState() {
+    super.initState();
     BlocProvider.of<AudioBloc>(context)
         .add(FetchAudioEvent(genre: widget.genreKey));
+  }
 
-    super.initState();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _widgetScalling = scaleSmallDevice(context);
+    _size = MediaQuery.of(context).size;
   }
 
   @override
   Widget build(BuildContext context) {
-    double? widgetScalling = scaleSmallDevice(context);
-    double? textScale = textScaleRatio(context);
-
-    Size size = MediaQuery.of(context).size;
     return BlocBuilder<AudioBloc, AudioState>(builder: (context, state) {
       if (state is AudioLoading) {
         const Center(
@@ -515,7 +638,7 @@ class _VinylPlayListState extends State<VinylPlayList> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
               child: SizedBox(
-                  height: size.height * 0.44 * widgetScalling!,
+                  height: _size.height * 0.44 * _widgetScalling,
                   child: VinylPlaylistTile(
                     vinylName: state.trackList![0].audioName,
                     onTap: () {
