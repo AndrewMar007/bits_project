@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:bits_project/core/network/network_info.dart';
 import 'package:bits_project/features/data/datasources/audio_remote_data_source.dart';
 import 'package:bits_project/features/data/datasources/user_local_data_source.dart';
@@ -15,15 +16,19 @@ import 'package:bits_project/features/domain/usecases/validate_email.dart';
 import 'package:bits_project/features/domain/usecases/validate_password.dart';
 import 'package:bits_project/features/presentation/bloc/audio_bloc/audio_bloc.dart';
 import 'package:bits_project/features/presentation/bloc/validation_bloc/validation_event.dart';
+import 'package:bits_project/features/presentation/provider/notifiers/audio_hander.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../../core/values/page_manager.dart';
+
 final sl = GetIt.instance;
 Future<void> init() async {
   // sl.registerFactory(() => );
-
+  sl.registerSingleton<AudioHandler>(await initAudioService());
+  sl.registerLazySingleton<PageManager>(() => PageManager());
   //! Features
   sl.registerLazySingleton(() => FetchUser(sl()));
   sl.registerLazySingleton(() => SendUser(sl()));
