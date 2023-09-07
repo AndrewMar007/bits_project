@@ -1,3 +1,4 @@
+import 'package:bits_project/core/values/page_manager.dart';
 import 'package:bits_project/features/presentation/pages/navigation/playlist_view.dart';
 import 'package:bits_project/features/presentation/pages/navigation/upload_audio_page.dart';
 import 'package:bits_project/features/presentation/provider/audio_provider.dart';
@@ -10,6 +11,8 @@ import '../../../../core/values/config.dart';
 import '../../../../core/values/device_platform_scale.dart';
 import '../../../data/models/audio_model.dart';
 import '../player/audio_player_page.dart';
+import '../player/new_audio_player_page.dart';
+import '../../injection_container.dart' as di;
 
 class CupertinoBottomBar extends StatefulWidget {
   const CupertinoBottomBar({super.key});
@@ -161,6 +164,7 @@ class CupertinoBottomBarState extends State<CupertinoBottomBar> {
   // }
   void createOverlay(BuildContext context, Size size,
       List<AudioModel>? audioList, int index, double widgetScaling) {
+    di.sl<PageManager>().setAudioList(audioList!);
     entry = OverlayEntry(builder: (context) {
       return Align(
         alignment: Alignment.bottomCenter,
@@ -207,7 +211,7 @@ class CupertinoBottomBarState extends State<CupertinoBottomBar> {
                     width: size.width,
                     child: VinylOverlayWidget(
                       index: index,
-                      audioList: audioList!,
+                      audioList: audioList,
                       vinylImage: audioList[index].imageLink!,
                       mainImage: audioList[index].imageLink!,
                     ),
@@ -219,7 +223,7 @@ class CupertinoBottomBarState extends State<CupertinoBottomBar> {
                       child: Container(
                           height: height,
                           width: size.width,
-                          child: AudioPlayerPage(
+                          child: NewAudioPlayerPage(
                             entry: entry,
                             audioList: audioList,
                             index: index,

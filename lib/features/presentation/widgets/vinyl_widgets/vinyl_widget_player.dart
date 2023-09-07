@@ -102,53 +102,76 @@ class _VinylAudioPlayerWidgetState extends State<VinylAudioPlayerWidget>
                           "assets/images/vinyl.png",
                         ))),
                   ),
-                  Center(
-                    child: Container(
-                      height: size.height * 0.07 * widgetScalling,
-                      width: size.width * 0.18 * widgetScalling,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  '${getApiURl()}/${widget.vinylImage}'))),
+                  if (widget.vinylImage.isNotEmpty) ...[
+                    Center(
+                      child: Container(
+                        height: size.height * 0.07 * widgetScalling,
+                        width: size.width * 0.18 * widgetScalling,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(widget.vinylImage))),
+                      ),
                     ),
-                  )
+                  ] else ...[
+                    const Center(child: CircularProgressIndicator())
+                  ]
                 ]),
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 0.0, top: 40.0),
-            child: Container(
-              height: size.height * 0.24 * widgetScalling,
-              width: size.width * 0.48 * widgetScalling,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.0),
-                image: DecorationImage(
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.high,
-                    image: NetworkImage('${getApiURl()}/${widget.mainImage}')),
-                boxShadow: [
-                  BoxShadow(
-                    offset: -const Offset(7, 7),
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                    blurRadius: 10.0,
-                  ),
-                  const BoxShadow(
-                    offset: Offset(7, 7),
-                    color: Color.fromARGB(95, 0, 0, 0),
-                    blurRadius: 10.0,
-                  ),
-                ],
-                shape: BoxShape.rectangle,
-                color: const Color.fromARGB(255, 211, 214, 253),
+            child: Stack(
+              children: [
+                Container(
+                  height: size.height * 0.24 * widgetScalling,
+                  width: size.width * 0.48 * widgetScalling,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
 
-                // boxShadow: [
-                //   BoxShadow(
-                //       color: Colors.black12, offset: Offset(0, 3), blurRadius: 8)
-                // ]),
-              ),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: -const Offset(7, 7),
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        blurRadius: 10.0,
+                      ),
+                      const BoxShadow(
+                        offset: Offset(7, 7),
+                        color: Color.fromARGB(95, 0, 0, 0),
+                        blurRadius: 10.0,
+                      ),
+                    ],
+                    shape: BoxShape.rectangle,
+                    color: const Color.fromARGB(255, 211, 214, 253),
+
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //       color: Colors.black12, offset: Offset(0, 3), blurRadius: 8)
+                    // ]),
+                  ),
+                ),
+                if (widget.mainImage.isNotEmpty) ...[
+                  Container(
+                    height: size.height * 0.24 * widgetScalling,
+                    width: size.width * 0.48 * widgetScalling,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
+                          image: NetworkImage(widget.mainImage)),
+                      shape: BoxShape.rectangle,
+                    ),
+                  ),
+                ] else ...[
+                  SizedBox(
+                      height: size.height * 0.24 * widgetScalling,
+                      width: size.width * 0.48 * widgetScalling,
+                      child: const Center(child: CircularProgressIndicator()))
+                ]
+              ],
             ),
           ),
           // Image.file(

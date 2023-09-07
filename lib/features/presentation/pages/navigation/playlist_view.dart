@@ -17,6 +17,8 @@ import '../../provider/audio_provider.dart';
 import '../../widgets/buttons/text_button_main_list.dart';
 import '../../widgets/vinyl_widgets/vinyl_widget_playlist_tile.dart';
 import '../../widgets/vinyl_widgets/vinyl_widget_tile.dart';
+import '../player/AudioPage.dart';
+import '../player/new_audio_player_page.dart';
 
 class PlaylistView extends StatefulWidget {
   const PlaylistView({super.key});
@@ -340,71 +342,6 @@ class _GenreListState extends State<GenreList> {
     _size = MediaQuery.of(context).size;
   }
 
-  void _insertOverlay(
-      BuildContext context, Size size, List<AudioModel>? audioList, int index) {
-    entry = OverlayEntry(builder: (context) {
-      return Align(
-        alignment: Alignment.bottomCenter,
-        child: GestureDetector(
-            onVerticalDragUpdate: (details) {
-              index = _audioProvider;
-              height = size.height - details.globalPosition.dy;
-              // opacity = details.globalPosition.dy;
-              print("Current index - " + index.toString());
-
-              final position = details.globalPosition.dy / 600;
-              if (1 > position && position > 0) {
-                setState(() {
-                  opacity = opacity1 - details.globalPosition.dy / 600;
-                });
-              } else if (position > 1 && opacity != 1) {
-                opacity = 0;
-              } else if (position < 0 && opacity != 0) {
-                opacity = 1;
-              }
-
-              entry!.markNeedsBuild();
-              height! < 30 ? height = 50 : height!;
-            },
-            onVerticalDragEnd: (details) {
-              if (height! < size.height * 0.5) {
-                opacity = 0.0;
-                entry!.markNeedsBuild();
-                height = 30;
-              } else {
-                opacity = 1.0;
-                height = size.height;
-                entry!.markNeedsBuild();
-              }
-            },
-            child: Stack(
-              children: [
-                Container(
-                  height: 30,
-                  width: size.width,
-                  color: Colors.red,
-                ),
-                AnimatedOpacity(
-                    duration: Duration(milliseconds: 1),
-                    curve: Curves.bounceIn,
-                    opacity: opacity,
-                    child: Container(
-                        color: Colors.black,
-                        height: height,
-                        width: size.width,
-                        child: AudioPlayerPage(
-                          entry: entry!,
-                          audioList: audioList,
-                          index: index,
-                        ))),
-              ],
-            )),
-      );
-    });
-    final overlay = Overlay.of(context);
-    overlay.insert(entry!);
-  }
-
   @override
   Widget build(BuildContext context) {
     _audioProvider = Provider.of<AudioProvider>(context).index;
@@ -507,7 +444,7 @@ class _GenreListState extends State<GenreList> {
                       vinylName: state.trackList![index].audioName,
                       onTap: () {
                         keyGlobal.currentState!.createOverlay(context, _size,
-                            state.trackList, _audioProvider, _widgetScalling);
+                            state.trackList, index, _widgetScalling);
                         // _insertOverlay(
                         //     context, _size, state.trackList, _audioProvider);
                         // Navigator.push(
